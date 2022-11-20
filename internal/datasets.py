@@ -32,6 +32,7 @@ from internal import utils
 import jax
 import numpy as np
 from PIL import Image
+import scipy.io
 
 # This is ugly, but it works.
 import sys
@@ -524,6 +525,7 @@ class Blender(Dataset):
     images = []
     disp_images = []
     normal_images = []
+    depth_images = []
     cams = []
     for _, frame in enumerate(meta['frames']):
       fprefix = os.path.join(self.data_dir, frame['file_path'])
@@ -545,6 +547,11 @@ class Blender(Dataset):
       if self._load_disps:
         disp_image = get_img('_disp.tiff')
         disp_images.append(disp_image)
+      if config.use_depth_supervision:
+        depth_image = get_img('_depth.tiff')
+        depth_images.append(depth_image)
+        depth_error = get_img('_error.tiff')
+        depth_errors.append(depth_error)
       if self._load_normals:
         normal_image = get_img('_normal.png')[..., :3] * 2. / 255. - 1.
         normal_images.append(normal_image)
@@ -554,6 +561,9 @@ class Blender(Dataset):
     self.images = np.stack(images, axis=0)
     if self._load_disps:
       self.disp_images = np.stack(disp_images, axis=0)
+    if config.use_depth_supervision:
+      self.depth_images['measurements'] = np.stack(depth_images, axis=0)
+      self.depth_images['errors'] = np.stakc(depth_errors, axis=0)
     if self._load_normals:
       self.normal_images = np.stack(normal_images, axis=0)
       self.alphas = self.images[..., -1]
@@ -718,13 +728,14 @@ class LLFF(Dataset):
     if config.rawnerf_mode:
       for key in ['exposure_idx', 'exposure_values']:
         self.metadata[key] = self.metadata[key][indices]
+    # Load depth images if depth supervision is used
+    if config.use_depth_supervision:
+      # TODO: Try to implement an alternative way using a TIFF file format
 
-    # TODO: Complete depth image loading
-    self.depth_images['measurements'] = -np.ones_like(images)
-    self.depth_images['errors'] = np.zeros_like(images)
-    # May not always be the case
-    assert self.depth_images['measurements'].shape == images.shape
-    assert self.depth_images['errors'].shape == images.shape
+      depth_file = os.path.join(self.data_dir, 'depth.mat')
+      depths = scipy.io.loadmat(depth_file)
+      self.depth_images['measurements'] = depths['depths']
+      self.depth_images['errors'] = depths['errors']
 
     self.images = images
     self.camtoworlds = self.render_poses if config.render_path else poses
