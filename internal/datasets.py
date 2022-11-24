@@ -548,10 +548,9 @@ class Blender(Dataset):
         disp_image = get_img('_disp.tiff')
         disp_images.append(disp_image)
       if config.use_depth_supervision:
-        depth_image = get_img('_depth.tiff')
+        depth_image = np.load(fprefix + '_depth.npz')
         depth_images.append(depth_image)
-        depth_error = get_img('_error.tiff')
-        depth_errors.append(depth_error)
+        
       if self._load_normals:
         normal_image = get_img('_normal.png')[..., :3] * 2. / 255. - 1.
         normal_images.append(normal_image)
@@ -563,7 +562,7 @@ class Blender(Dataset):
       self.disp_images = np.stack(disp_images, axis=0)
     if config.use_depth_supervision:
       self.depth_images['measurements'] = np.stack(depth_images, axis=0)
-      self.depth_images['errors'] = np.stakc(depth_errors, axis=0)
+      self.depth_images['errors'] = self.depth_images['measurements'] * 0.01
     if self._load_normals:
       self.normal_images = np.stack(normal_images, axis=0)
       self.alphas = self.images[..., -1]
