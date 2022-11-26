@@ -729,12 +729,17 @@ class LLFF(Dataset):
         self.metadata[key] = self.metadata[key][indices]
     # Load depth images if depth supervision is used
     if config.use_depth_supervision:
-      # TODO: Try to implement an alternative way using a TIFF file format
-
-      depth_file = os.path.join(self.data_dir, 'depth.mat')
-      depths = scipy.io.loadmat(depth_file)
-      self.depth_images['measurements'] = depths['depths']
-      self.depth_images['errors'] = depths['errors']
+      depth_dir = os.path.join(self.data_dir, 'depths' + image_dir_suffix)
+      err_dir = os.path.join(self.data_dir, 'err' + image_dir_suffix)
+      depth_paths = [os.path.join(depth_dir, colmap_to_image[f][:-3] + 'npy') for f in image_names]
+      err_paths = [os.path.join(err_dir, colmap_to_image[f][:-3] + 'npy') for f in image_names]
+      depth_images = []
+      err_images = []
+      for depth_path, err_path in zip(depth_paths, err_paths):
+        depth_images.append(np.load(depth_path))
+        err_images.append(np.load(err_path))
+      self.depth_images['measurements'] = np.stack(depth_images, axis=0)
+      self.depth_images['errors'] = np.stack(depth_images, axis=0)
 
     self.images = images
     self.camtoworlds = self.render_poses if config.render_path else poses
