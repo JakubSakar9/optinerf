@@ -15,12 +15,12 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=ficus
+SCENE=bulldozer
 EXPERIMENT=blender
-DATA_DIR=/usr/local/google/home/barron/tmp/nerf_data/nerf_synthetic
-CHECKPOINT_DIR=/usr/local/google/home/barron/tmp/nerf_results/"$EXPERIMENT"/"$SCENE"
+DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_synthetic
+CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
-rm "$CHECKPOINT_DIR"/*
+sudo rm "$CHECKPOINT_DIR"/*
 python -m train \
   --gin_configs=configs/blender_256.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
