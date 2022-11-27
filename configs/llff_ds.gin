@@ -1,15 +1,17 @@
-Config.dataset_loader = 'blender'
-Config.batching = 'single_image'
-Config.near = 2
-Config.far = 6
-Config.eval_render_interval = 5
-Config.data_loss_type = 'mse'
+Config.dataset_loader = 'llff'
+Config.near = 0.
+Config.far = 1.
+Config.factor = 4
+Config.forward_facing = True
 Config.adam_eps = 1e-8
 Config.batch_size = 8192
 Config.lr_init = 0.001
 Config.lr_final = 0.00001
 Config.max_steps = 500000
+Config.use_depth_supervision = True
 
+Model.ray_shape = 'cylinder'
+Model.opaque_background = True
 Model.num_levels = 2
 Model.num_prop_samples = 128
 Model.num_nerf_samples = 32
@@ -26,8 +28,6 @@ NerfMLP.net_width = 256
 NerfMLP.basis_shape = 'octahedron'
 NerfMLP.basis_subdivisions = 1
 NerfMLP.disable_density_normals = True
-
-Config.distortion_loss_mult = 0.
 
 NerfMLP.max_deg_point = 16
 PropMLP.max_deg_point = 16

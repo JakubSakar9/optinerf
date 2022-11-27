@@ -20,8 +20,12 @@ EXPERIMENT=blender
 DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_synthetic
 CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
-python -m eval \
+python -m render \
   --gin_configs=configs/blender_256.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}'" \
+  --gin_bindings="Config.render_path = True" \
+  --gin_bindings="Config.render_path_frames = 10" \
+  --gin_bindings="Config.render_dir = '${CHECKPOINT_DIR}/render/'" \
+  --gin_bindings="Config.render_video_fps = 2" \
   --logtostderr

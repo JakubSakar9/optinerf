@@ -16,12 +16,13 @@
 export CUDA_VISIBLE_DEVICES=0
 
 SCENE=bulldozer
-EXPERIMENT=blender
+EXPERIMENT=blender_ds
 DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_synthetic
 CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
-python -m eval \
-  --gin_configs=configs/blender_256.gin \
+sudo rm "$CHECKPOINT_DIR"/*
+python -m train \
+  --gin_configs=configs/blender_ds.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}'" \
   --logtostderr
