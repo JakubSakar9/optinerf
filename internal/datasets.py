@@ -452,6 +452,7 @@ class Dataset(threading.Thread, metaclass=abc.ABCMeta):
       batch['normals'] = self.normal_images[cam_idx, pix_y_int, pix_x_int]
       batch['alphas'] = self.alphas[cam_idx, pix_y_int, pix_x_int]
     if self.depth_images is not None:
+      batch['depths'] = {}
       batch['depths']['measurements'] = self.depth_images['measurements'][cam_idx, pix_y_int, pix_x_int]
       batch['depths']['errors'] = self.depth_images['measurements'][cam_idx, pix_y_int, pix_x_int]
     return utils.Batch(**batch)
@@ -548,7 +549,7 @@ class Blender(Dataset):
         disp_image = get_img('_disp.tiff')
         disp_images.append(disp_image)
       if config.use_depth_supervision:
-        depth_image = np.load(fprefix + '_depth.npz')
+        depth_image = np.load(fprefix + '_depth.npz')['arr_0']
         depth_images.append(depth_image)
         
       if self._load_normals:
@@ -561,8 +562,13 @@ class Blender(Dataset):
     if self._load_disps:
       self.disp_images = np.stack(disp_images, axis=0)
     if config.use_depth_supervision:
-      self.depth_images['measurements'] = np.stack(depth_images, axis=0)
-      self.depth_images['errors'] = self.depth_images['measurements'] * 0.01
+      self.depth_images = {}
+      temp_depth = np.stack(depth_images, axis=0)
+      img_height = self.images.shape[1]
+      temp_depth = np.reshape(temp_depth, (temp_depth.shape[0], img_height, -1))
+      print(temp_depth.shape)
+      self.depth_images['measurements'] = temp_depth
+      self.depth_images['errors'] = temp_depth * 0.01
     if self._load_normals:
       self.normal_images = np.stack(normal_images, axis=0)
       self.alphas = self.images[..., -1]
@@ -739,6 +745,7 @@ class LLFF(Dataset):
       for depth_path, err_path in zip(depth_paths, err_paths):
         depth_images.append(np.load(depth_path))
         err_images.append(np.load(err_path))
+      self.depth_images = {}
       self.depth_images['measurements'] = np.stack(depth_images, axis=0)
       self.depth_images['errors'] = np.stack(depth_images, axis=0)
 

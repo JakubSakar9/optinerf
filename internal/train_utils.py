@@ -291,7 +291,7 @@ def create_train_step(model: models.Model,
       losses['data'] = data_loss
 
       if config.use_depth_supervision:
-        losses['depth'] = compute_depth_loss(batch, depths, renderings, config)
+        losses['depth'] = compute_depth_loss(ray_history, depths, config)
 
       if config.interlevel_loss_mult > 0:
         losses['interlevel'] = interlevel_loss(ray_history, config)

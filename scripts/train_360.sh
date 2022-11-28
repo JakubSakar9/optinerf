@@ -23,7 +23,6 @@ CHECKPOINT_DIR=/usr/local/google/home/barron/tmp/nerf_results/"$EXPERIMENT"/"$SC
 # If running one of the indoor scenes, add
 # --gin_bindings="Config.factor = 2"
 
-rm "$CHECKPOINT_DIR"/*
 python -m train \
   --gin_configs=configs/360.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \

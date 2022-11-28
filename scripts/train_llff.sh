@@ -20,7 +20,6 @@ EXPERIMENT=llff
 DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
 CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
-rm "$CHECKPOINT_DIR"/*
 python -m train \
   --gin_configs=configs/llff_256.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
