@@ -27,4 +27,3 @@ for d, e in zip(depth_files, err_files):
     np.save(e_path, E)
 shutil.move(depth_dir, os.path.join(dataset_path, 'depths'))
 shutil.move(err_dir, os.path.join(dataset_path, 'err'))
-subprocess.call("scripts/local_colmap_and_resize.sh")

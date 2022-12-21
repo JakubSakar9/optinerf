@@ -602,7 +602,6 @@ class LLFF(Dataset):
     colmap_dir = os.path.join(self.data_dir, 'sparse/0/')
 
     # Load poses.
-    print(colmap_dir)
     if utils.file_exists(colmap_dir):
       pose_data = NeRFSceneManager(colmap_dir).process()
     else:

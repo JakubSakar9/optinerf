@@ -2,6 +2,10 @@ Config.dataset_loader = 'llff'
 Config.near = 0.2
 Config.far = 1e6
 Config.factor = 4
+Config.batch_size = 4096
+Config.lr_init = 0.0005
+Config.lr_final = 0.000005
+Config.max_steps = 1000000
 
 Model.raydist_fn = @jnp.reciprocal
 Model.opaque_background = True

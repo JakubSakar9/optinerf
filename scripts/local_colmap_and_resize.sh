@@ -21,24 +21,26 @@ DATASET_PATH=$1
 # Recommended CAMERA values: OPENCV for perspective, OPENCV_FISHEYE for fisheye.
 CAMERA=${2:-OPENCV}
 
+export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/
+
 
 # Run COLMAP.
 
 ### Feature extraction
 
-colmap feature_extractor \
-    --database_path "$DATASET_PATH"/database.db \
-    --image_path "$DATASET_PATH"/images \
-    --ImageReader.single_camera 1 \
-    --ImageReader.camera_model "$CAMERA" \
-    --SiftExtraction.use_gpu "$USE_GPU"
+# colmap feature_extractor \
+#     --database_path "$DATASET_PATH"/database.db \
+#     --image_path "$DATASET_PATH"/images \
+#     --ImageReader.single_camera 1 \
+#     --ImageReader.camera_model "$CAMERA" \
+#     --SiftExtraction.use_gpu "$USE_GPU"
 
 
 ### Feature matching
 
-colmap exhaustive_matcher \
-    --database_path "$DATASET_PATH"/database.db \
-    --SiftMatching.use_gpu "$USE_GPU"
+# colmap exhaustive_matcher \
+#     --database_path "$DATASET_PATH"/database.db \
+#     --SiftMatching.use_gpu "$USE_GPU"
 
 ## Use if your scene has > 500 images
 ## Replace this path with your own local copy of the file.
@@ -54,12 +56,12 @@ colmap exhaustive_matcher \
 
 # The default Mapper tolerance is unnecessarily large,
 # decreasing it speeds up bundle adjustment steps.
-mkdir -p "$DATASET_PATH"/sparse
-colmap mapper \
-    --database_path "$DATASET_PATH"/database.db \
-    --image_path "$DATASET_PATH"/images \
-    --output_path "$DATASET_PATH"/sparse \
-    --Mapper.ba_global_function_tolerance=0.000001
+# mkdir -p "$DATASET_PATH"/sparse
+# colmap mapper \
+#     --database_path "$DATASET_PATH"/database.db \
+#     --image_path "$DATASET_PATH"/images \
+#     --output_path "$DATASET_PATH"/sparse \
+#     --Mapper.ba_global_function_tolerance=0.000001
 
 
 ### Image undistortion
