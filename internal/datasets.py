@@ -565,11 +565,12 @@ class Blender(Dataset):
     if config.use_depth_supervision:
       self.depth_images = {}
       temp_depth = np.stack(depth_images, axis=0)
+      far_plane = np.max(temp_depth)
+      temp_depth /= far_plane
       img_height = self.images.shape[1]
       temp_depth = np.reshape(temp_depth, (temp_depth.shape[0], img_height, -1))
-      print(temp_depth.shape)
       self.depth_images['measurements'] = temp_depth
-      self.depth_images['errors'] = temp_depth * 0.01
+      self.depth_images['errors'] = temp_depth * 0.01 / (far_plane ** 2)
     if self._load_normals:
       self.normal_images = np.stack(normal_images, axis=0)
       self.alphas = self.images[..., -1]
@@ -746,8 +747,11 @@ class LLFF(Dataset):
         depth_images.append(np.load(depth_path))
         err_images.append(np.load(err_path))
       self.depth_images = {}
-      self.depth_images['measurements'] = np.stack(depth_images, axis=0)
-      self.depth_images['errors'] = np.stack(depth_images, axis=0)
+      temp_depth = np.stack(depth_images, axis=0)
+      far_plane = np.max(temp_depth)
+      temp_depth /= far_plane
+      self.depth_images['measurements'] = temp_depth
+      self.depth_images['errors'] = np.stack(depth_images, axis=0) / (far_plane ** 2)
 
     self.images = images
     self.camtoworlds = self.render_poses if config.render_path else poses
