@@ -455,6 +455,7 @@ class Dataset(threading.Thread, metaclass=abc.ABCMeta):
       batch['depths'] = {}
       batch['depths']['measurements'] = self.depth_images['measurements'][cam_idx, pix_y_int, pix_x_int]
       batch['depths']['errors'] = self.depth_images['measurements'][cam_idx, pix_y_int, pix_x_int]
+    print()
     return utils.Batch(**batch)
 
   def _next_train(self) -> utils.Batch:

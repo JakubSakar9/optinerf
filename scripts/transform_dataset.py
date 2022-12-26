@@ -12,6 +12,7 @@ depth_dir = os.path.join(dataset_path, 'depth_stat')
 err_dir = os.path.join(dataset_path, 'confidence')
 depth_files = [os.path.join(depth_dir, f) for f in os.listdir(depth_dir)]
 err_files = [os.path.join(err_dir, f) for f in os.listdir(err_dir)]
+print(depth_files)
 depth_files = filter(lambda str: str[-3:] == 'mat', depth_files)
 err_files = filter(lambda str: str[-3:] == 'mat', err_files)
 for d, e in zip(depth_files, err_files):

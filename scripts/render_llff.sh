@@ -15,7 +15,7 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=construction_site_recon
+SCENE=construction_site_small2
 EXPERIMENT=llff
 DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
 CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
@@ -25,7 +25,7 @@ python -m render \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}'" \
   --gin_bindings="Config.render_path = True" \
-  --gin_bindings="Config.render_path_frames = 10" \
+  --gin_bindings="Config.render_path_frames = 90" \
   --gin_bindings="Config.render_dir = '${CHECKPOINT_DIR}/render/'" \
-  --gin_bindings="Config.render_video_fps = 2" \
+  --gin_bindings="Config.render_video_fps = 60" \
   --logtostderr

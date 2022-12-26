@@ -15,7 +15,7 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=room
+SCENE=construction_site_small2
 EXPERIMENT=llff
 DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
 CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"

@@ -135,9 +135,11 @@ def compute_depth_loss(ray_history, depths, config):
   d_var = depths['errors']
   last_ray_results = ray_history[-1]
   w = last_ray_results['weights']
-  t = last_ray_results['tdist']
+  sdist = last_ray_results['sdist']
+
+  t = sdist[:, :, :, :-1] / 2 + sdist[:, :, :, 1:] / 2
+  delta = sdist[:, :, :, :-1] - sdist[:, :, :, 1:]
   lw = jnp.log(w)
-  delta = jnp.zeros_like(t) # I have no idea how to 
   loss = -(lw + (t - D) ** 2 / (2 * d_var)) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta
   return jnp.sum(loss)
 
@@ -346,6 +348,8 @@ def create_train_step(model: models.Model,
     stats['psnr'] = stats['psnrs'][-1]
     return new_state, stats, rng
 
+  
+  
   train_pstep = jax.pmap(
       train_step,
       axis_name='batch',
