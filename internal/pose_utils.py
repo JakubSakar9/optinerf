@@ -6,10 +6,10 @@ import colmap_read_model as read_model
 
 
 def generate_poses_file(realdir):
-    
+
     camerasfile = os.path.join(realdir, 'sparse/0/cameras.bin')
     camdata = read_model.read_cameras_binary(camerasfile)
-    
+
     # cam = camdata[camdata.keys()[0]]
     list_of_keys = list(camdata.keys())
     cam = camdata[list_of_keys[0]]
@@ -18,13 +18,13 @@ def generate_poses_file(realdir):
     h, w, f = cam.height, cam.width, cam.params[0]
     # w, h, f = factor * w, factor * h, factor * f
     hwf = np.array([h,w,f]).reshape([3,1])
-    
+
     imagesfile = os.path.join(realdir, 'sparse/0/images.bin')
     imdata = read_model.read_images_binary(imagesfile)
-    
+
     w2c_mats = []
     bottom = np.array([0,0,0,1.]).reshape([1,4])
-    
+
     names = [imdata[k].name for k in imdata]
     print( 'Images #', len(names))
     perm = np.argsort(names)
@@ -34,19 +34,19 @@ def generate_poses_file(realdir):
         t = im.tvec.reshape([3,1])
         m = np.concatenate([np.concatenate([R, t], 1), bottom], 0)
         w2c_mats.append(m)
-    
+
     w2c_mats = np.stack(w2c_mats, 0)
     c2w_mats = np.linalg.inv(w2c_mats)
-    
+
     poses = c2w_mats[:, :3, :4].transpose([1,2,0])
     poses = np.concatenate([poses, np.tile(hwf[..., np.newaxis], [1,1,poses.shape[-1]])], 1)
-    
+
     points3dfile = os.path.join(realdir, 'sparse/0/points3D.bin')
     pts3d = read_model.read_points3d_binary(points3dfile)
-    
+
     # must switch to [-u, r, -t] from [r, -u, t], NOT [r, u, -t]
     poses = np.concatenate([poses[:, 1:2, :], poses[:, 0:1, :], -poses[:, 2:3, :], poses[:, 3:4, :], poses[:, 4:5, :]], 1)
-    
+
     pts_arr = []
     vis_arr = []
     for k in pts3d:
@@ -62,11 +62,11 @@ def generate_poses_file(realdir):
     pts_arr = np.array(pts_arr)
     vis_arr = np.array(vis_arr)
     print( 'Points', pts_arr.shape, 'Visibility', vis_arr.shape )
-    
+
     zvals = np.sum(-(pts_arr[:, np.newaxis, :].transpose([2,0,1]) - poses[:3, 3:4, :]) * poses[:3, 2:3, :], 0)
     valid_z = zvals[vis_arr==1]
     print( 'Depth stats', valid_z.min(), valid_z.max(), valid_z.mean() )
-    
+
     save_arr = []
     for i in perm:
         vis = vis_arr[:, i]
@@ -74,8 +74,8 @@ def generate_poses_file(realdir):
         zs = zs[vis==1]
         close_depth, inf_depth = np.percentile(zs, .1), np.percentile(zs, 99.9)
         # print( i, close_depth, inf_depth )
-        
+
         save_arr.append(np.concatenate([poses[..., i].ravel(), np.array([close_depth, inf_depth])], 0))
     save_arr = np.array(save_arr)
-    
+
     np.save(os.path.join(basedir, 'poses_bounds.npy'), save_arr)

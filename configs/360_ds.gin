@@ -6,7 +6,9 @@ Config.batch_size = 4096
 Config.lr_init = 0.0005
 Config.lr_final = 0.000005
 Config.max_steps = 200000
-Config.checkpoint_every = 50000
+Config.checkpoint_every = 10000
+Config.use_depth_supervision = True
+Config.depth_supervision_loss_mult = 0.1
 Config.num_border_pixels_to_mask = 10
 
 Model.raydist_fn = @jnp.reciprocal
