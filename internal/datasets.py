@@ -741,10 +741,12 @@ class LLFF(Dataset):
 
         # Load depth images if depth supervision is used
         if config.use_depth_supervision:
+            # Create filepaths
             depth_dir = os.path.join(self.data_dir, 'depths' + image_dir_suffix)
             err_dir = os.path.join(self.data_dir, 'err' + image_dir_suffix)
             depth_paths = [os.path.join(depth_dir, colmap_to_image[f][:-3] + 'npy') for f in image_names]
             err_paths = [os.path.join(err_dir, colmap_to_image[f][:-3] + 'npy') for f in image_names]
+            #Loading depth images
             depth_images = []
             err_images = []
             for depth_path, err_path in zip(depth_paths, err_paths):
@@ -763,7 +765,7 @@ class LLFF(Dataset):
                                                              err_images,
                                                              self.pixtocams)
             
-            temp_depth, temp_err = depth_images, err_images
+            # temp_depth, temp_err = depth_images, err_images
 
             self.depth_images['measurements'] = temp_depth
             self.depth_images['errors'] =  temp_err

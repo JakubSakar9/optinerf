@@ -34,18 +34,8 @@ def depth_to_ndc(pix_x_int: _Array,
                  depth: _Array,
                  err: _Array,
                  pixtocams: _Array) -> Tuple[_Array, _Array]:
-    # # Helper function that creates vectors from origin to pixel centres
-    # def pix_to_dir(x, y):
-    #     return np.stack([x + .5, y + .5, np.ones_like(x)], axis=-1)
-    
-    # # Compute direction vectors with unit z component with respect to pixels
-    # pix_dirs = pix_to_dir(pix_x_int, pix_y_int)
-    
-    # # Transform directions to camera coordinates
-    # mat_vec_mul = lambda A, b: np.matmul(A, b[..., None])[..., 0]
-    # cam_dirs = mat_vec_mul(pixtocams, pix_dirs)
-
-    temp_depth, temp_err = depth, err
+    temp_depth = 1 - 1 / depth
+    temp_err = err * (temp_depth / depth) ** 2
     return temp_depth, temp_err
 
 def convert_to_ndc(origins: _Array,
