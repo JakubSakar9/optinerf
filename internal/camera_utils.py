@@ -29,11 +29,8 @@ import scipy
 _Array = Union[np.ndarray, jnp.ndarray]
 
 
-def depth_to_ndc(pix_x_int: _Array,
-                 pix_y_int: _Array,
-                 depth: _Array,
-                 err: _Array,
-                 pixtocams: _Array) -> Tuple[_Array, _Array]:
+def depth_to_ndc(depth: _Array,
+                 err: _Array) -> Tuple[_Array, _Array]:
     temp_depth = 1 - 1 / depth
     temp_err = err * (temp_depth / depth) ** 2
     return temp_depth, temp_err
