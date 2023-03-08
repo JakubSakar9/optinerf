@@ -759,11 +759,7 @@ class LLFF(Dataset):
             err_images = np.stack(err_images, axis=0)
 
             pix_x_int, pix_y_int = camera_utils.pixel_coordinates(self.width, self.height)
-            temp_depth, temp_err = camera_utils.depth_to_ndc(pix_x_int,
-                                                             pix_y_int,
-                                                             depth_images,
-                                                             err_images,
-                                                             self.pixtocams)
+            temp_depth, temp_err = camera_utils.depth_to_ndc(depth_images, err_images)
             
             # temp_depth, temp_err = depth_images, err_images
 
