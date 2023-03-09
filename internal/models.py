@@ -307,7 +307,6 @@ class Model(nn.Module):
                     jnp.clip(
                         jnp.nan_to_num(jnp.exp(expectation(jnp.log(t_mids))), jnp.inf),
                         tdist[..., 0], tdist[..., -1]))
-                print(ray_results['dists'].shape)
                 ray_results['h'] = alpha_weights[-1]
             ray_history.append(ray_results)
 

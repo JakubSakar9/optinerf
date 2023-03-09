@@ -132,8 +132,6 @@ def compute_depth_loss(ray_history, depths, config):
     """Computes the depth supervision loss for DS-NeRF"""
     eps = 1e-5
     offset = 0.5
-    D = jnp.expand_dims(depths['measurements'], axis=-1)
-    d_var = jnp.expand_dims(depths['errors'], axis=-1)
     last_ray_results = ray_history[-1]
     
     tdist = last_ray_results['tdist']
@@ -141,11 +139,14 @@ def compute_depth_loss(ray_history, depths, config):
     delta = tdist[..., :-1] - tdist[..., 1:]
     
     # Compute loss using KL divergence
+    # D = jnp.expand_dims(depths['measurements'], axis=-1)
+    # d_var = jnp.expand_dims(depths['errors'], axis=-1)
     # w = last_ray_results['h'] + eps
     # loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
     # loss = jnp.sum(loss, axis=-1)
 
     # Compute loss using MSE
+    D = depths['measurements']
     dists = last_ray_results['dists']
     loss = (dists - D) ** 2
 
