@@ -135,14 +135,20 @@ def compute_depth_loss(ray_history, depths, config):
     D = jnp.expand_dims(depths['measurements'], axis=-1)
     d_var = jnp.expand_dims(depths['errors'], axis=-1)
     last_ray_results = ray_history[-1]
-    w = last_ray_results['h'] + eps
+    
     tdist = last_ray_results['tdist']
-
     t = tdist[..., :-1] / 2 + tdist[..., 1:] / 2
     delta = tdist[..., :-1] - tdist[..., 1:]
-    loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
+    
+    # Compute loss using KL divergence
+    # w = last_ray_results['h'] + eps
+    # loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
+    # loss = jnp.sum(loss, axis=-1)
 
-    loss = jnp.sum(loss, axis=-1)
+    # Compute loss using MSE
+    dists = last_ray_results['dists']
+    loss = (dists - D) ** 2
+
     return jnp.mean(loss) * config.depth_supervision_loss_mult
 
 

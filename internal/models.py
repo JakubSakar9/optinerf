@@ -298,6 +298,16 @@ class Model(nn.Module):
             ray_results['tdist'] = jnp.copy(tdist)
             ray_results['weights'] = jnp.copy(weights)
             if depth_supervised:
+                eps = jnp.finfo(jnp.float32).eps
+                acc = weights.sum(axis=-1)
+                expectation = lambda x: (weights * x).sum(axis=-1) / jnp.maximum(eps, acc)
+                t_mids = 0.5 * (tdist[..., :-1] + tdist[..., 1:])
+                # For numerical stability this expectation is computing using log-distance.
+                ray_results['dists'] = (
+                    jnp.clip(
+                        jnp.nan_to_num(jnp.exp(expectation(jnp.log(t_mids))), jnp.inf),
+                        tdist[..., 0], tdist[..., -1]))
+                print(ray_results['dists'].shape)
                 ray_results['h'] = alpha_weights[-1]
             ray_history.append(ray_results)
 
