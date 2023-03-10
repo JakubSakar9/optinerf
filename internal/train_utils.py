@@ -147,6 +147,7 @@ def compute_depth_loss(ray_history, depths, config):
 
     # Compute loss using MSE
     D = depths['measurements']
+    err = depths['errors']
     dists = last_ray_results['dists']
     loss = (dists - D) ** 2
 

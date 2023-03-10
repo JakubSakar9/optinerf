@@ -31,8 +31,11 @@ _Array = Union[np.ndarray, jnp.ndarray]
 
 def depth_to_ndc(depth: _Array,
                  err: _Array) -> Tuple[_Array, _Array]:
+    # eps = 10e-3
+    # temp_depth = 1 - 1 / np.maximum(1, depth)
+    # temp_err = err / (np.maximum(1, depth) * np.maximum(eps, (np.maximum(1, depth) - np.sqrt(err)))) ** 2
     temp_depth = 1 - 1 / depth
-    temp_err = err * (temp_depth / depth) ** 2
+    temp_err = err / (depth * (depth - np.sqrt(err))) ** 2
     return temp_depth, temp_err
 
 def convert_to_ndc(origins: _Array,
