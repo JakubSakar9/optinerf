@@ -11,6 +11,7 @@ Config.max_steps = 100000
 Config.checkpoint_every = 5000
 Config.use_depth_supervision = True
 Config.depth_supervision_loss_mult = 0.1
+# Config.depth_decay = 1e-3
 Config.num_border_pixels_to_mask = 10
 
 Model.ray_shape = 'cylinder'

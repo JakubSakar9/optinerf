@@ -91,7 +91,10 @@ class Config:
     interlevel_loss_mult: float = 1.0  # Mult. for the loss on the proposal MLP.
     orientation_loss_mult: float = 0.0  # Multiplier on the orientation loss.
     orientation_coarse_loss_mult: float = 0.0  # Coarser orientation loss weights.
+
     depth_supervision_loss_mult: float = 0.1
+    depth_decay: float = 0.0
+    
     # What that loss is imposed on, options are 'normals' or 'normals_pred'.
     orientation_loss_target: str = 'normals_pred'
     predicted_normal_loss_mult: float = 0.0  # Mult. on the predicted normal loss.

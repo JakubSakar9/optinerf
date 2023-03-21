@@ -139,17 +139,23 @@ def compute_depth_loss(ray_history, depths, config):
     delta = tdist[..., :-1] - tdist[..., 1:]
     
     # Compute loss using KL divergence
-    # D = jnp.expand_dims(depths['measurements'], axis=-1)
-    # d_var = jnp.expand_dims(depths['errors'], axis=-1)
-    # w = last_ray_results['h'] + eps
-    # loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
-    # loss = jnp.sum(loss, axis=-1)
+    D = jnp.expand_dims(depths['measurements'], axis=-1)
+    d_var = jnp.expand_dims(depths['errors'], axis=-1)
+    w = last_ray_results['h'] + eps
+    loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
+    # h = w
+    # s = d_var
+    # loss = jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s * jnp.log(jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s / h / 2) / 2
+    # loss *= delta
+    # # exp = -(D - t) ** 2 / (2 * d_var ** 2)
+    # # loss = (1 / jnp.sqrt(2 * jnp.pi)) * jnp.exp(exp) / d_var * jnp.log((1 / jnp.sqrt(2 * jnp.pi)) * jnp.exp(exp) / (d_var * w * 2)) / 2
+    # loss = jnp.log(w) * jnp.exp(- (t - D) ** 2 / (2 * d_var ** 2)) * delta
+    loss = jnp.sum(loss, axis=-1)
 
     # Compute loss using MSE
-    D = depths['measurements']
-    err = depths['errors']
-    dists = last_ray_results['dists']
-    loss = (dists - D) ** 2
+    # D = depths['measurements']
+    # err = depths['errors']
+    # loss = (t - D) ** 2
 
     return jnp.mean(loss) * config.depth_supervision_loss_mult
 
@@ -305,6 +311,8 @@ def create_train_step(model: models.Model,
 
             if config.use_depth_supervision and config.depth_supervision_loss_mult > 0.0:
                 losses['depth'] = compute_depth_loss(ray_history, depths, config)
+                if config.depth_decay > 1e-8:
+                    losses['depth'] *= (1 - config.depth_decay) ** (train_frac * config.max_steps)
 
             if config.interlevel_loss_mult > 0:
                 losses['interlevel'] = interlevel_loss(ray_history, config)
