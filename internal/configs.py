@@ -77,6 +77,14 @@ class Config:
     # Decimate images for tensorboard (ie, x[::d, ::d]) to conserve memory usage.
     vis_decimate: int = 0
 
+    # Depth supervision:
+    use_depth_supervision: bool = False
+    depth_supervision_loss_mult: float = 0.1
+    depth_decay: float = 0.0
+
+    # Efficient sampling:
+    efficient_samping: bool = False
+
     # Only used by train.py:
     max_steps: int = 250000  # The number of optimization steps.
     early_exit_steps: Optional[int] = None  # Early stopping, for debugging.
@@ -91,9 +99,6 @@ class Config:
     interlevel_loss_mult: float = 1.0  # Mult. for the loss on the proposal MLP.
     orientation_loss_mult: float = 0.0  # Multiplier on the orientation loss.
     orientation_coarse_loss_mult: float = 0.0  # Coarser orientation loss weights.
-
-    depth_supervision_loss_mult: float = 0.1
-    depth_decay: float = 0.0
     
     # What that loss is imposed on, options are 'normals' or 'normals_pred'.
     orientation_loss_target: str = 'normals_pred'
@@ -119,7 +124,6 @@ class Config:
     grad_max_norm: float = 0.001  # Gradient clipping magnitude, disabled if == 0.
     grad_max_val: float = 0.  # Gradient clipping value, disabled if == 0.
     distortion_loss_mult: float = 0.01  # Multiplier on the distortion loss.
-    use_depth_supervision: bool = False
 
     # Only used by eval.py:
     eval_only_once: bool = True  # If True evaluate the model only once, ow loop.

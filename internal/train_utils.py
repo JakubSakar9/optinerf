@@ -288,6 +288,7 @@ def create_train_step(model: models.Model,
             rays = batch.rays
             if config.cast_rays_in_train_step:
                 rays = camera_utils.cast_ray_batch(cameras, rays, camtype, xnp=jnp)
+            depths = None
             if config.use_depth_supervision:
                 depths = batch.depths
 
@@ -302,7 +303,9 @@ def create_train_step(model: models.Model,
                 train_frac=train_frac,
                 compute_extras=compute_extras,
                 zero_glo=False,
-                depth_supervised=config.use_depth_supervision)
+                depths=depths,
+                depth_supervised=config.use_depth_supervision,
+                efficient_sampling=config.efficient_sampling)
 
             losses = {}
 

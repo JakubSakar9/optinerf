@@ -10,6 +10,7 @@ Config.lr_final = 0.00001
 Config.max_steps = 100000
 Config.checkpoint_every = 5000
 Config.num_border_pixels_to_mask = 10
+Config.sample_efficient = True
 
 Model.ray_shape = 'cylinder'
 Model.opaque_background = True

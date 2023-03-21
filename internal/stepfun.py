@@ -262,6 +262,13 @@ def sample_intervals(rng,
     t_samples = jnp.concatenate([first, mid, last], axis=-1)
     return t_samples
 
+def sample_efficient(depths):
+    print(depths.shape)
+    first = depths * 0.9
+    last = depths * 1.05
+    t_samples = jnp.concatenate([first, depths, last], axis=-1)
+    return t_samples
+
 
 def lossfun_distortion(t, w):
     """Compute iint w[i] w[j] |t[i] - t[j]| di dj."""

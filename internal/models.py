@@ -79,7 +79,9 @@ class Model(nn.Module):
         train_frac,
         compute_extras,
         zero_glo=True,
-        depth_supervised=False
+        depths=None,
+        depth_supervised=False,
+        efficient_sampling=False
     ):
         """The mip-NeRF Model.
 
@@ -186,14 +188,17 @@ class Model(nn.Module):
 
             # Draw sampled intervals from each ray's current weights.
             key, rng = random_split(rng)
-            sdist = stepfun.sample_intervals(
-                key,
-                sdist,
-                logits_resample,
-                num_samples,
-                single_jitter=self.single_jitter,
-                domain=(init_s_near, init_s_far),
-                use_gpu_resampling=self.use_gpu_resampling)
+            if efficient_sampling:
+                sdist = stepfun.sample_efficient(depths)
+            else:
+                sdist = stepfun.sample_intervals(
+                    key,
+                    sdist,
+                    logits_resample,
+                    num_samples,
+                    single_jitter=self.single_jitter,
+                    domain=(init_s_near, init_s_far),
+                    use_gpu_resampling=self.use_gpu_resampling)
 
             # Optimization will usually go nonlinear if you propagate gradients
             # through sampling.
