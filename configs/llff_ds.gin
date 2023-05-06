@@ -1,8 +1,8 @@
 Config.dataset_loader = 'llff'
-Config.near = 0.
-Config.far = 1.
+Config.near = 0.1
+Config.far = 30.
 Config.factor = 0
-Config.forward_facing = True
+# Config.forward_facing = True
 Config.adam_eps = 1e-8
 Config.batch_size = 8192
 Config.lr_init = 0.001
