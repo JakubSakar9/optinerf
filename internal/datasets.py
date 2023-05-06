@@ -549,7 +549,7 @@ class Blender(Dataset):
                 disp_image = get_img('_disp.tiff')
                 disp_images.append(disp_image)
             if config.use_depth_supervision:
-                depth_image = np.load(fprefix + '_depth.npz')['arr_0']
+                depth_image = np.load(fprefix + '_depth_0025.npy')
                 depth_images.append(depth_image)
 
             if self._load_normals:
@@ -564,12 +564,10 @@ class Blender(Dataset):
         if config.use_depth_supervision:
             self.depth_images = {}
             temp_depth = np.stack(depth_images, axis=0)
-            far_plane = np.max(temp_depth)
-            temp_depth /= far_plane
             img_height = self.images.shape[1]
             temp_depth = np.reshape(temp_depth, (temp_depth.shape[0], img_height, -1))
             self.depth_images['measurements'] = temp_depth
-            self.depth_images['errors'] = temp_depth * 0.01 / (far_plane ** 2)
+            self.depth_images['errors'] = temp_depth * 0.0001
         if self._load_normals:
             self.normal_images = np.stack(normal_images, axis=0)
             self.alphas = self.images[..., -1]
@@ -741,6 +739,19 @@ class LLFF(Dataset):
 
         # Load depth images if depth supervision is used
         if config.use_depth_supervision:
+            calibration_matrix = np.array([
+                [1580.82, 0.0, 960.0],
+                [0.0, 1580.82, 720.0],
+                [0.0, 0.0, 1.0]
+            ])
+
+            c_i = np.linalg.inv(calibration_matrix)
+            xv, yv = np.meshgrid(np.linspace(0.5,1919.5,1920), np.linspace(0.5,1439.5,1440), indexing='xy')
+            uvs = np.stack((xv, yv, np.ones((1440, 1920))), axis=-1)
+            uvs = np.reshape(uvs, (1920 * 1440, 3)).T
+            pixels = np.dot(c_i, uvs).T
+            pixels = np.reshape(pixels, (1440, 1920, 3))
+
             # Create filepaths
             depth_dir = os.path.join(self.data_dir, 'depths' + image_dir_suffix)
             err_dir = os.path.join(self.data_dir, 'err' + image_dir_suffix)
@@ -756,11 +767,16 @@ class LLFF(Dataset):
 
             # Transforming depth images to NDC
             depth_images = np.stack(depth_images, axis=0)
+            depth_images = np.expand_dims(depth_images, axis=3)
+            pixels = np.expand_dims(pixels, axis=0)
+            depth_images = np.linalg.norm(pixels * depth_images, axis=-1)
+
             err_images = np.stack(err_images, axis=0)
 
-            temp_depth, temp_err = camera_utils.depth_to_ndc(depth_images, err_images)
-            
-            # temp_depth, temp_err = depth_images, err_images
+            if config.forward_facing:
+                temp_depth, temp_err = camera_utils.depth_to_ndc(depth_images, err_images)
+            else:
+                temp_depth, temp_err = depth_images, err_images
 
             self.depth_images['measurements'] = temp_depth
             self.depth_images['errors'] =  temp_err

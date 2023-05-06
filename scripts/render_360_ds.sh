@@ -17,8 +17,8 @@ export CUDA_VISIBLE_DEVICES=0
 
 SCENE=construction_site_small2
 EXPERIMENT=360_ds
-DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
-CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
+DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_llff_data
+CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 python -m render \
   --gin_configs=configs/360_ds.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \

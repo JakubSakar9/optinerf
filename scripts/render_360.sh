@@ -15,16 +15,16 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=construction_site_small2
+SCENE=ship
 EXPERIMENT=360
-DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
-CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
+DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_llff_data
+CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 python -m render \
   --gin_configs=configs/360.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}'" \
-  --gin_bindings="Config.render_path = True" \
+  --gin_bindings="Config.render_path = False" \
   --gin_bindings="Config.render_path_frames = 20" \
   --gin_bindings="Config.render_dir = '${CHECKPOINT_DIR}/render/'" \
-  --gin_bindings="Config.render_video_fps = 4" \
+  --gin_bindings="Config.render_video_fps = 2" \
   --logtostderr

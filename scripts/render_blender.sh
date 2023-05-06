@@ -15,10 +15,10 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=bulldozer
-EXPERIMENT=blender
-DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_synthetic
-CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
+SCENE=ship
+EXPERIMENT=blender_ndc
+DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_synthetic
+CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
 python -m render \
   --gin_configs=configs/blender_256.gin \

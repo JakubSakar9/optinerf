@@ -130,32 +130,34 @@ def compute_data_loss(batch, renderings, rays, config):
 
 def compute_depth_loss(ray_history, depths, config):
     """Computes the depth supervision loss for DS-NeRF"""
-    eps = 1e-5
+    eps = 1e-6
     offset = 0.5
     last_ray_results = ray_history[-1]
     
     tdist = last_ray_results['tdist']
     t = tdist[..., :-1] / 2 + tdist[..., 1:] / 2
     delta = tdist[..., :-1] - tdist[..., 1:]
-    
-    # Compute loss using KL divergence
-    D = jnp.expand_dims(depths['measurements'], axis=-1)
-    d_var = jnp.expand_dims(depths['errors'], axis=-1)
-    w = last_ray_results['h'] + eps
-    loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
-    # h = w
-    # s = d_var
-    # loss = jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s * jnp.log(jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s / h / 2) / 2
-    # loss *= delta
-    # # exp = -(D - t) ** 2 / (2 * d_var ** 2)
-    # # loss = (1 / jnp.sqrt(2 * jnp.pi)) * jnp.exp(exp) / d_var * jnp.log((1 / jnp.sqrt(2 * jnp.pi)) * jnp.exp(exp) / (d_var * w * 2)) / 2
-    # loss = jnp.log(w) * jnp.exp(- (t - D) ** 2 / (2 * d_var ** 2)) * delta
-    loss = jnp.sum(loss, axis=-1)
 
-    # Compute loss using MSE
-    # D = depths['measurements']
-    # err = depths['errors']
-    # loss = (t - D) ** 2
+    D = jnp.expand_dims(depths['measurements'], axis=-1)
+    # w = last_ray_results['h'] + eps
+    w = last_ray_results['weights'] + eps
+    
+    if config.depth_loss_type == 'mse':
+        err = depths['errors']
+        loss = (t - D) ** 2 * w
+        loss = jnp.sum(loss, axis=-1)
+    else:
+        d_var = jnp.expand_dims(depths['errors'], axis=-1)
+        loss = -jnp.log(w) * jnp.exp(-(t - D) ** 2 / (2 * d_var)) * delta + offset
+        if config.depth_loss_type == 'kl':
+            h = w
+            s = d_var
+            loss = jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s * jnp.log(jnp.sqrt(2) * jnp.pi ** (-0.1e1 / 0.2e1) * jnp.exp(-(-t + D) ** 2 / s ** 2 / 2) / s / h / 2) / 2
+            loss *= delta
+        else:
+            loss = jnp.log(w) * jnp.exp(- (t - D) ** 2 / (2 * d_var ** 2)) * delta
+            loss = jnp.sum(loss, axis=-1)
+
 
     return jnp.mean(loss) * config.depth_supervision_loss_mult
 

@@ -263,10 +263,11 @@ def sample_intervals(rng,
     return t_samples
 
 def sample_efficient(depths):
-    print(depths.shape)
-    first = depths * 0.9
-    last = depths * 1.05
-    t_samples = jnp.concatenate([first, depths, last], axis=-1)
+    d = depths['measurements']
+    first = d * 0.8
+    last = d * 1.1
+    t_samples = jnp.linspace(first, last, 12, axis=-1)
+    # t_samples = jnp.concatenate([first, d, last], axis=-1)
     return t_samples
 
 

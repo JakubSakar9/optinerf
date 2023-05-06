@@ -16,9 +16,9 @@
 export CUDA_VISIBLE_DEVICES=0
 
 SCENE=construction_site_small2
-EXPERIMENT=llff_efs
-DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
-CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
+EXPERIMENT=llff_nondc
+DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_llff_data
+CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
 python -m train \
   --gin_configs=configs/llff_256.gin \

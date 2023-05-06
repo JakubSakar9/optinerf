@@ -81,9 +81,10 @@ class Config:
     use_depth_supervision: bool = False
     depth_supervision_loss_mult: float = 0.1
     depth_decay: float = 0.0
+    depth_loss_type: str = 'mse'
 
     # Efficient sampling:
-    efficient_samping: bool = False
+    efficient_sampling: bool = False
 
     # Only used by train.py:
     max_steps: int = 250000  # The number of optimization steps.

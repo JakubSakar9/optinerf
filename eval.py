@@ -168,6 +168,7 @@ def main(unused_argv):
                 metrics.append(metric)
                 metrics_cc.append(metric_cc)
 
+            print(rendering['distance_mean'][400, 400])
             if config.eval_save_output and (config.eval_render_interval > 0):
                 if (idx % config.eval_render_interval) == 0:
                     utils.save_img_u8(postprocess_fn(rendering['rgb']),

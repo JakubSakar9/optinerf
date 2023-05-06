@@ -200,7 +200,7 @@ def volumetric_rendering(rgbs,
             jnp.clip(
                 jnp.nan_to_num(jnp.exp(expectation(jnp.log(t_mids))), jnp.inf),
                 tdist[..., 0], tdist[..., -1]))
-
+        
         # Add an extra fencepost with the far distance at the end of each ray, with
         # whatever weight is needed to make the new weight vector sum to exactly 1
         # (`weights` is only guaranteed to sum to <= 1, not == 1).

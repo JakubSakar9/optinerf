@@ -15,10 +15,10 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-SCENE=construction_site_small2
+SCENE=ship
 EXPERIMENT=360
-DATA_DIR=/home/ciirc/sakarjak/optinerf/datasets/nerf_llff_data
-CHECKPOINT_DIR=/home/ciirc/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
+DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_llff_data
+CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
 # If running one of the indoor scenes, add
 # --gin_bindings="Config.factor = 2"

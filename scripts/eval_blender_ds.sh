@@ -16,12 +16,12 @@
 export CUDA_VISIBLE_DEVICES=0
 
 SCENE=ship_ds
-EXPERIMENT=blender_bb
+EXPERIMENT=blender_ds
 DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_synthetic
 CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
 python -m eval \
-  --gin_configs=configs/blender_256.gin \
+  --gin_configs=configs/blender_ds.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}'" \
   --logtostderr

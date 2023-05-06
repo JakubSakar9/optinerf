@@ -1,14 +1,14 @@
 Config.dataset_loader = 'blender'
 Config.batching = 'single_image'
-Config.near = 2
-Config.far = 6
+Config.near = 0
+Config.far = 10
 Config.eval_render_interval = 5
 Config.data_loss_type = 'mse'
 Config.adam_eps = 1e-8
 Config.batch_size = 8192
 Config.lr_init = 0.001
 Config.lr_final = 0.00001
-Config.max_steps = 500000
+Config.max_steps = 100000
 Config.checkpoint_every = 5000
 
 Model.num_levels = 2
