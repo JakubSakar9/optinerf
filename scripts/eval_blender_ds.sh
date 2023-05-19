@@ -16,7 +16,7 @@
 export CUDA_VISIBLE_DEVICES=0
 
 SCENE=ship_ds
-EXPERIMENT=blender_ds
+EXPERIMENT=blender_ds_mse_100
 DATA_DIR=/local/sakarjak/optinerf/datasets/nerf_synthetic
 CHECKPOINT_DIR=/local/sakarjak/optinerf/nerf_results/"$EXPERIMENT"/"$SCENE"
 
