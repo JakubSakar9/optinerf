@@ -6,9 +6,6 @@ This repository was directly derived from the [MultiNeRF repository](https://git
 
 Here is the list of all configuration options that were not present in the original [MultiNeRF repository](https://github.com/google-research/multinerf)
 
-## New configuration files
-
-All of these files are stored in the **/config** directory
 
 - **use_depth_supervision** - A bool that enables the depth supervision loss function. It can only be used for the mip-NeRF method; using for other methods such as mip-NeRF 360 or Ref-NeRF was not tested and may lead to undefined behaviour. Set to false by default.
 - **depth_supervision_loss_mult** - A float that defines the multiplier used for the depth supervision loss function. Set to 0.1 by default.
@@ -19,15 +16,21 @@ All of these files are stored in the **/config** directory
   - **mse** - Another loss function taken from [DS-NeRF](https://github.com/dunbar12138/DSNeRF). Used by default and whenever any other string is used as the parameter value.
 - **efficient_sampling** - A bool that was created to enable a planned feature of efficient sampling near the input depth values. However, this feature was left unfinished, so setting this parameter to true will lead to undefined behavior. Set to false by default.
 
+## New configuration files
+
+All of these files are stored in the **/config** directory
+
+- **blender_ds.gin** - Configuration file that was used for depth supervision experiments with the blender dataset.
+- **llff_ds.gin** - Configuration file that was used for depth supervision experiments with the LLFF datasets.
+
 ## Additional files
 
 The following section contains additional files used during dataset preparation but are not part of the project and need to be run independently. All of these files are stored in the **/scripts** directory.
 
-- **show_depthmap.ipynb**
-- **depth_loss.ipynb**
-- **transform_depth.py**
-- **generate_cropped.ipynb**
-- **pose_utils.py**, **colmap_read_model.py** - Files that were copied from the [LLFF repository](https://github.com/Fyusion/LLFF) and modified to produce pose bound for used datasets.
+- **show_depthmap.ipynb** - A python notebook which was used to transform depth images for visualization.
+- **depth_loss.ipynb** - A python notebook that was used to model the behaviour of different depth supervision loss functions. These experiments were not presented in the thesis.
+- **transform_depth.py** - The script that was originally used to transform depth images in the matlab matrix format to numpy arrays. However, this script was no longer used for late experiments and is only included for completeness.
+- **generate_cropped.ipynb** - A python notebook that was used to crop images in the results directories and convert them into the JPG format. This notebook was only used for images that were directly included in the thesis and serves no other practical purpose.
 
 ## References
 
