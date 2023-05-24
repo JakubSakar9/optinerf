@@ -2,6 +2,8 @@
 
 This repository was directly derived from the [MultiNeRF repository](https://github.com/google-research/multinerf), which Google Research published as a Code Release for Mip-NeRF 360, Ref-NeRF, and RawNeRF. The functionality that was added in this project is the option of depth supervised training for mip-NeRF when using adequate depth images for each viewpoint. The code was tested on three datasets which can be found in a [Google Drive directory](https://drive.google.com/drive/folders/1CvObrtawHvlLIk1IRxcQiaQAqaa1BW9_?usp=share_link). For information regarding installation and basic used of the code refer to the readme of the [MultiNeRF repository](https://github.com/google-research/multinerf).
 
+This project was published alongside a bachelor's thesis under the Czech Technical University in Prague.
+
 ## New configuration options
 
 Here is the list of all configuration options that were not present in the original [MultiNeRF repository](https://github.com/google-research/multinerf)
